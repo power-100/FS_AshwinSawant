@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Commute Optimizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .status-card, .feature-card, .info-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-color: #0ea5e9;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border-color: #22c55e;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #fefce8, #fef3c7);
+            border-color: #eab308;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .status-item {
+            background: rgba(255,255,255,0.8);
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .status-item strong {
+            display: block;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .feature-item {
+            background: rgba(255,255,255,0.8);
+            padding: 1rem;
+            border-radius: 6px;
+        }
+        
+        .feature-item h4 {
+            color: #15803d;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-item ul {
+            list-style: none;
+            color: #166534;
+        }
+        
+        .feature-item li {
+            margin-bottom: 0.25rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        .feature-item li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        .demo-section {
+            background: #fef2f2;
+            border: 1px solid #f87171;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .demo-section h3 {
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-section p {
+            color: #7f1d1d;
+            line-height: 1.6;
+        }
+        
+        .tech-stack {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            color: #64748b;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-success {
+            background: #22c55e;
+        }
+        
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        
+        #api-status {
+            font-weight: bold;
+        }
+        
+        .loading {
+            color: #f59e0b;
+        }
+        
+        .connected {
+            color: #22c55e;
+        }
+        
+        .error {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Student Commute Optimizer</h1>
+            <p>A full-stack carpooling platform for students to share rides safely and efficiently</p>
+        </div>
+        
+        <div class="content">
+            <div class="status-card">
+                <h2 class="card-title">System Status</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <strong>Backend API</strong>
+                        <span id="api-status" class="loading">Checking...</span>
+                    </div>
+                    <div class="status-item">
+                        <strong>Frontend</strong>
+                        <span class="connected">✅ HTML/CSS/JS Running</span>
+                    </div>
+                    <div class="status-item">
+                        <strong>WebSocket</strong>
+                        <span class="connected">✅ Ready for real-time chat</span>
+                    </div>
+                    <div class="status-item">
+                        <strong>Database</strong>
+                        <span class="loading">⚠️ Demo Mode</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h2 class="card-title">🎯 Key Features</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <h4>Core Features</h4>
+                        <ul>
+                            <li>Student registration & login</li>
+                            <li>Anonymous username system</li>
+                            <li>Route planning & visualization</li>
+                            <li>Student matching algorithm</li>
+                            <li>Real-time messaging</li>
+                        </ul>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Safety Features</h4>
+                        <ul>
+                            <li>User reporting system</li>
+                            <li>Content moderation</li>
+                            <li>Email verification</li>
+                            <li>Privacy protection</li>
+                            <li>Secure authentication</li>
+                        </ul>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Technical Features</h4>
+                        <ul>
+                            <li>Full-stack TypeScript</li>
+                            <li>Real-time WebSocket chat</li>
+                            <li>Geospatial route matching</li>
+                            <li>RESTful API design</li>
+                            <li>Responsive design</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-card">
+                <h2 class="card-title">🚧 How It Works</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="background: rgba(255,255,255,0.8); padding: 1rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👤</div>
+                        <h4 style="color: #92400e; margin-bottom: 0.5rem;">1. Register</h4>
+                        <p style="color: #92400e; font-size: 0.9rem;">Sign up and get anonymous username</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.8); padding: 1rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🗺️</div>
+                        <h4 style="color: #92400e; margin-bottom: 0.5rem;">2. Set Route</h4>
+                        <p style="color: #92400e; font-size: 0.9rem;">Enter home and school locations</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.8); padding: 1rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+                        <h4 style="color: #92400e; margin-bottom: 0.5rem;">3. Find Matches</h4>
+                        <p style="color: #92400e; font-size: 0.9rem;">Discover similar routes</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.8); padding: 1rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">💬</div>
+                        <h4 style="color: #92400e; margin-bottom: 0.5rem;">4. Chat</h4>
+                        <p style="color: #92400e; font-size: 0.9rem;">Connect with matched students</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.8); padding: 1rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚗</div>
+                        <h4 style="color: #92400e; margin-bottom: 0.5rem;">5. Ride Together</h4>
+                        <p style="color: #92400e; font-size: 0.9rem;">Save money and make friends</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h3>⚠️ Development Demo</h3>
+                <p>This is a development demonstration of the Student Commute Optimizer. The application showcases a complete full-stack architecture with professional features including anonymous user systems, real-time chat, route matching algorithms, and comprehensive security measures. Some features require additional setup for production deployment including MongoDB database, API keys, and email services.</p>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" class="btn" onclick="testBackend()">Test Backend Connection</a>
+                    <a href="http://localhost:5000/health" target="_blank" class="btn btn-success">View API Health</a>
+                </div>
+            </div>
+            
+            <div class="tech-stack">
+                <p><strong>Built with:</strong> React + Next.js + Node.js + Express.js + MongoDB + TypeScript + Socket.io + JWT + Leaflet</p>
+                <p style="margin-top: 0.5rem; opacity: 0.8;">Professional full-stack development with modern technologies and best practices</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check backend status
+        async function checkBackend() {
+            const statusElement = document.getElementById('api-status');
+            
+            try {
+                const response = await fetch('http://localhost:5000/health');
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusElement.textContent = '✅ Backend Connected';
+                    statusElement.className = 'connected';
+                } else {
+                    statusElement.textContent = '❌ Backend Error';
+                    statusElement.className = 'error';
+                }
+            } catch (error) {
+                statusElement.textContent = '❌ Backend Offline';
+                statusElement.className = 'error';
+            }
+        }
+        
+        function testBackend() {
+            checkBackend();
+            alert('Backend connection test initiated. Check the status above.');
+        }
+        
+        // Check backend status on page load
+        window.addEventListener('load', function() {
+            setTimeout(checkBackend, 1000);
+        });
+        
+        // Recheck every 10 seconds
+        setInterval(checkBackend, 10000);
+    </script>
+</body>
+</html>
